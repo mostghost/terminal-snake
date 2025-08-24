@@ -25,6 +25,8 @@ class CGDisplay:
 
         self._place_head(head)
 
+        self._place_tail(snake[0])
+
         self._append_border()
 
         # os.system("clear")
@@ -80,13 +82,29 @@ class CGDisplay:
 
         match direction:
             case "N":
-                self.grid[y][x] = "┌┐"
+                self.grid[y][x] = "╒╕"
             case "W":
                 self.grid[y][x] = "━═"
             case "S":
-                self.grid[y][x] = "└┘"
+                self.grid[y][x] = "╘╛"
             case "E":
                 self.grid[y][x] = "═━"
+
+    def _place_tail(self, tail):
+        x = tail[0][0]
+        y = tail[0][1]
+        direction = tail[1][0]
+
+        match direction:
+            case "N":
+                self.grid[y][x] = "└┘"
+            case "W":
+                self.grid[y][x] = "═╴"
+            case "S":
+                self.grid[y][x] = "┌┐"
+            case "E":
+                self.grid[y][x] = "╶═"
+
 
 
     def _append_border(self):
@@ -109,9 +127,9 @@ class CGDisplay:
 
     def _create_prefix_suffix(self):
 
-        a_l = "╭───────────────╮"
-        b_l = "│ S  N  A  K  E │"
-        c_l = "│ ┌─────────────┴"
+        a_l = "╭────────────────────╮"
+        b_l = "│ T A P E    W O R M │"
+        c_l = "│ ┌──────────────────┴"
 
         self.prefix.append(a_l + " " * (self.grid_x - len(a_l) + 3))
         self.prefix.append(b_l + " " * (self.grid_x - len(b_l) + 3))
