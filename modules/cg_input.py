@@ -32,6 +32,11 @@ class CGInput:
         if inp in [
             "O",  # Quit
             "X",  # Toggle screen clear
+            "R",  # Reset
+            "V",  # Slow
+            "B",  # Fast
+            "N",  # Faster
+            "M",  # Fastest
             "W",
             "A",
             "S",

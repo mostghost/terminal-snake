@@ -25,20 +25,52 @@ class MainLoop:
         self.logic_manager = cg_logic.CGLogic(self.x, self.y)
         self.display_manager = cg_display.CGDisplay(self.x, self.y)
 
-        self.TARGET_FPS = 24
+        self.TARGET_FPS = 60
         self.TARGET_DURATION = 1.0 / self.TARGET_FPS
 
         self.dead = False
+        self.reset = False
+
+        self.delta_set()
+
+    def delta_set(self):
+        self.delta_start = time.time()
+
+    def delta_end(self):
+        delta_end = time.time()
+
+        delta_elapsed = delta_end - self.delta_start
+        delta_frame = self.TARGET_DURATION - delta_elapsed
+
+        if delta_frame > 0:
+            time.sleep(delta_frame)
 
     def run(self):
         try:
             while True:
-                delta_start = time.time()
+
+                self.delta_set()
 
                 inp = self.input_manager.update()
                 # One special exception as soon as we get input:
                 if inp == "O":
                     sys.exit()
+
+                if inp == "R":
+                    self.reset = True
+                    self.dead = False
+
+                if self.reset:
+                    if inp in ["B", "V", "N", "M"]:
+                        self.logic_manager.reset()
+                        self.display_manager.reset()
+                        self.logic_manager.set_gamespeed(inp)
+                        self.reset = False
+                        continue
+
+                    self.display_manager.render("NewGame")
+                    self.delta_end()
+                    continue
 
                 snake, head, dead = self.logic_manager.update(inp)
 
@@ -50,15 +82,9 @@ class MainLoop:
                 else:
                     self.display_manager.update(snake, head)
 
-                self.display_manager.render()
+                self.display_manager.render("Normal")
 
-                delta_end = time.time()
-
-                delta_elapsed = delta_end - delta_start
-                delta_frame = self.TARGET_DURATION - delta_elapsed
-
-                if delta_frame > 0:
-                    time.sleep(delta_frame)
+                self.delta_end()
 
         finally:
             termios.tcsetattr(self.fd, termios.TCSANOW, self.old_term)

@@ -10,17 +10,23 @@ class CGDisplay:
         self.grid_y = y
         self.real_x = self.grid_x * 2
 
+        self.screen_clear = True
+
+        self.prefix = []
+        self.suffix = []
+        self.suffix_newgame = []
+        self._create_prefix()
+        self._create_suffix()
+        self._create_suffix_newgame()
+
+        self.reset()
+
+    def reset(self):
         self.grid = []
         self.rendered = []
         self.dead_grid = False
         self.death_counter = 0
         self.death_pos = (0, 0)
-
-        self.screen_clear = False
-
-        self.prefix = []
-        self.suffix = []
-        self._create_prefix_suffix()
 
     def update(self, snake: list, head: tuple):
 
@@ -44,10 +50,12 @@ class CGDisplay:
         else:
             return
 
-    def render(self):
+    def render(self, type: str):
         self.rendered = []
 
         self._append_border()
+
+        self._append_suffix(type)
 
         if self.screen_clear:
             os.system("clear")
@@ -142,9 +150,13 @@ class CGDisplay:
         for line in self.grid[7:]:
             self.rendered.append("  │" + "".join(line) + "│ │")
 
-        self.rendered.extend(self.suffix)
+    def _append_suffix(self, type: str):
+        if type == "Normal":
+            self.rendered.extend(self.suffix)
+        elif type == "NewGame":
+            self.rendered.extend(self.suffix_newgame)
 
-    def _create_prefix_suffix(self):
+    def _create_prefix(self):
 
         a_l = "╭────────────────────╮"
         b_l = "│ F L A T    W O R M │"
@@ -153,6 +165,8 @@ class CGDisplay:
         self.prefix.append(a_l + " " * (self.grid_x - len(a_l) + 3))
         self.prefix.append(b_l + " " * (self.grid_x - len(b_l) + 3))
         self.prefix.append(c_l + ("─" * ((self.real_x - len(c_l) + 3))) + "╮  ")
+
+    def _create_suffix(self):
 
         half_real = int(self.real_x / 2)
 
@@ -178,6 +192,35 @@ class CGDisplay:
             )
 
         self.suffix.append(
+            "   " + (" " * (half_real - 1)) + "╰" + ("─" * (half_real) + "──╯")
+        )
+
+    def _create_suffix_newgame(self):
+
+        half_real = int(self.real_x / 2)
+
+        self.suffix_newgame.append(
+            "  ╰" + ("─" * (half_real - 1)) + "┬" + ("─" * (half_real) + "┘ │")
+        )
+
+        final_lines = [
+            "Slow - V",
+            "Fast - B",
+            "Faster - N",
+            "Fastest - M",
+        ]
+
+        for line in final_lines:
+            self.suffix_newgame.append(
+                "   "
+                + " " * (half_real - 1)
+                + "│"
+                + " " * (half_real - len(line) + 1)
+                + line
+                + " │"
+            )
+
+        self.suffix_newgame.append(
             "   " + (" " * (half_real - 1)) + "╰" + ("─" * (half_real) + "──╯")
         )
 

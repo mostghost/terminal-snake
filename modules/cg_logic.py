@@ -6,6 +6,17 @@ class CGLogic:
         self.grid_x = x
         self.grid_y = y
 
+        self.gamespeed_map = {"Slow": 10, "Fast": 6, "Faster": 3, "Fastest": 1}
+
+        self.gamespeed = self.gamespeed_map["Slow"]
+
+        self.reset()
+
+    def reset(self):
+
+        x = self.grid_x
+        y = self.grid_y
+
         self.snake = [((int(x / 2), y - 1), "N-N"), ((int(x / 2), y - 2), "N-N")]
         self.snake_length = 6
         self.position_x = int(x / 2)
@@ -23,7 +34,7 @@ class CGLogic:
         if inp:
             self._change_direction(inp)
 
-        if self.counter == 10:
+        if self.counter == self.gamespeed:
 
             self.prev_direction = self.direction
             self.direction = self.update_direction
@@ -38,6 +49,17 @@ class CGLogic:
         dead = self._check_death()
 
         return self.snake, self.head, dead
+
+    def set_gamespeed(self, inp: str):
+        match inp:
+            case "V":
+                self.gamespeed = self.gamespeed_map["Slow"]
+            case "B":
+                self.gamespeed = self.gamespeed_map["Fast"]
+            case "N":
+                self.gamespeed = self.gamespeed_map["Faster"]
+            case "M":
+                self.gamespeed = self.gamespeed_map["Fastest"]
 
     def _change_direction(self, inp: str):
         match inp:
@@ -88,7 +110,9 @@ class CGLogic:
         dead = False
 
         if self.position_x <= -1 or self.position_x == (self.grid_x):
-            x = max(0, min(self.position_x, self.grid_x - 1))  # Clamps to acceptable range
+            x = max(
+                0, min(self.position_x, self.grid_x - 1)
+            )  # Clamps to acceptable range
             dead = (x, self.position_y)
         if self.position_y <= -1 or self.position_y == (self.grid_y):
             y = max(0, min(self.position_y, self.grid_y - 1))
