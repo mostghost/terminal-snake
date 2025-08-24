@@ -19,7 +19,7 @@ class CGLogic:
         y = self.grid_y
 
         self.snake = [((int(x / 2), y - 1), "N-N"), ((int(x / 2), y - 2), "N-N")]
-        self.snake_length = 6
+        self.snake_length = 2
         self.position_x = int(x / 2)
         self.position_y = y - 3
         self.direction = "N"
@@ -47,7 +47,7 @@ class CGLogic:
             self._move_snake()
 
             if self.fruit_pos != (-1, -1):
-                self.fruit_pos = self._check_fruit()
+                self._check_fruit()
 
         if self.fruit_pos == (-1, -1):
 
@@ -139,7 +139,13 @@ class CGLogic:
         return dead
 
     def _check_fruit(self):
-        return self.fruit_pos
+        current_pos = (self.position_x, self.position_y)
+
+        if current_pos == self.fruit_pos:
+            self.fruit_pos = (-1, -1)
+            self.fruit_exists = False
+
+            self.snake_length += 2
 
     def _place_fruit(self):
         body_positions, _ = zip(*self.snake)
