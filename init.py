@@ -25,7 +25,7 @@ class MainLoop:
         self.logic_manager = cg_logic.CGLogic(self.x, self.y)
         self.display_manager = cg_display.CGDisplay(self.x, self.y)
 
-        self.TARGET_FPS = 8
+        self.TARGET_FPS = 24
         self.TARGET_DURATION = 1.0 / self.TARGET_FPS
 
     def run(self):

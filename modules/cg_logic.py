@@ -9,17 +9,28 @@ class CGLogic:
         self.position_y = y - 2
         self.direction = "N"
         self.prev_direction = "N"
+        self.update_direction = "N"
+        self.counter = 0
 
     def update(self, inp: str):
-
-        print(f"Input!:{inp}")
 
         if inp:
             self._change_direction(inp)
 
-        self._move_snake()
+        if self.counter == 4:
 
-        return self.snake
+            self.prev_direction = self.direction
+            self.direction = self.update_direction
+
+            self._move_snake()
+
+            self.counter = 0
+
+            return self.snake
+
+        else:
+            self.counter += 1
+            return self.snake
 
     def _change_direction(self, inp: str):
         match inp:
@@ -27,28 +38,32 @@ class CGLogic:
                 if self.direction == "S":
                     return None
                 else:
-                    self.prev_direction = self.direction
-                    self.direction = "N"
+                    self.update_direction = "N"
             case "A":
                 if self.direction == "E":
                     return None
                 else:
-                    self.prev_direction = self.direction
-                    self.direction = "W"
+                    self.update_direction = "W"
             case "S":
                 if self.direction == "N":
                     return None
                 else:
-                    self.prev_direction = self.direction
-                    self.direction = "S"
+                    self.update_direction = "S"
             case "D":
                 if self.direction == "W":
                     return None
                 else:
-                    self.prev_direction = self.direction
-                    self.direction = "E"
+                    self.update_direction = "E"
 
     def _move_snake(self):
+
+        self.snake.append(
+            (
+                (self.position_x, self.position_y),
+                (f"{self.direction}-{self.prev_direction}"),
+            ),
+        )
+
         match self.direction:
             case "N":
                 self.position_y -= 1
@@ -58,13 +73,6 @@ class CGLogic:
                 self.position_x -= 1
             case "E":
                 self.position_x += 1
-
-        self.snake.append(
-            (
-                (self.position_x, self.position_y),
-                (f"{self.direction}-{self.prev_direction}"),
-            ),
-        )
 
         if len(self.snake) > self.snake_length:
             self.snake.pop(0)

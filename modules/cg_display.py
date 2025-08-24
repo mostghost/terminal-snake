@@ -16,7 +16,7 @@ class CGDisplay:
         self.suffix = []
         self._create_prefix_suffix()
 
-    def update(self, snake:list):
+    def update(self, snake: list):
         self.rendered = []
 
         self._create_grid()
@@ -36,7 +36,39 @@ class CGDisplay:
         for position, direction_type in snake:
             x = position[0]
             y = position[1]
-            self.grid[y][x] = "00"
+
+            # Note that direction type may be a little confusing - "N-W" does not
+            # mean northwest, it means "coming from the west, we're going north"
+            # So ("CURRENT-PREVIOUS").
+            match direction_type:
+
+                case "N-N":
+                    self.grid[y][x] = "││"
+                case "N-W":
+                    self.grid[y][x] = "╘╧"
+                case "N-E":
+                    self.grid[y][x] = "╧╛"
+
+                case "W-W":
+                    self.grid[y][x] = "══"
+                case "W-N":
+                    self.grid[y][x] = "╤╕"
+                case "W-S":
+                    self.grid[y][x] = "╧╛"
+
+                case "S-S":
+                    self.grid[y][x] = "││"
+                case "S-W":
+                    self.grid[y][x] = "╒╤"
+                case "S-E":
+                    self.grid[y][x] = "╤╕"
+
+                case "E-E":
+                    self.grid[y][x] = "══"
+                case "E-N":
+                    self.grid[y][x] = "╒╤"
+                case "E-S":
+                    self.grid[y][x] = "╘╧"
 
     def _append_border(self):
 
