@@ -52,13 +52,17 @@ class MainLoop:
                 self.delta_set()
 
                 inp = self.input_manager.update()
-                # One special exception as soon as we get input:
+
+                # Some special exceptions should get handled by the game client:
                 if inp == "O":
                     sys.exit()
 
                 if inp == "R":
                     self.reset = True
                     self.dead = False
+
+                if inp == "X":
+                    self.display_manager.toggle_clear()
 
                 if self.reset:
                     if inp in ["B", "V", "N", "M"]:

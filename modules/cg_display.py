@@ -28,6 +28,9 @@ class CGDisplay:
         self.death_counter = 0
         self.death_pos = (0, 0)
 
+    def toggle_clear(self):
+        self.screen_clear = not self.screen_clear
+
     def update(self, snake: list, head: tuple):
 
         self._create_grid()
