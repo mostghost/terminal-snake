@@ -1,4 +1,5 @@
 import sys
+import random
 
 
 class CGLogic:
@@ -6,7 +7,7 @@ class CGLogic:
         self.grid_x = x
         self.grid_y = y
 
-        self.gamespeed_map = {"Slow": 10, "Fast": 6, "Faster": 3, "Fastest": 1}
+        self.gamespeed_map = {"Slow": 8, "Fast": 5, "Faster": 3, "Fastest": 2}
 
         self.gamespeed = self.gamespeed_map["Slow"]
 
@@ -26,29 +27,41 @@ class CGLogic:
         self.update_direction = "N"
         self.counter = 0
         self.head = ((self.position_x, self.position_y), "N")
+        self.fruit_pos = (-1, -1)
+        self.fruit_timer = None
 
-    def update(self, inp: str):
+        self.position_map = [[(x, y) for x in range(x)] for y in range(y)]
+
+    def update(self, inp: str, clock: int):
 
         self.head = ((self.position_x, self.position_y), self.direction)
 
         if inp:
             self._change_direction(inp)
 
-        if self.counter == self.gamespeed:
+        if clock % self.gamespeed == 0:
 
             self.prev_direction = self.direction
             self.direction = self.update_direction
 
             self._move_snake()
 
-            self.counter = 0
+            if self.fruit_pos != (-1, -1):
+                self.fruit_pos = self._check_fruit()
 
-        else:
-            self.counter += 1
+        if self.fruit_pos == (-1, -1):
+
+            if not self.fruit_timer:
+                self.fruit_timer = clock + random.randint(60, 180)
+
+            elif clock == self.fruit_timer:
+                self.fruit_pos = self._place_fruit()
+                self.fruit_timer = None
+                self.fruit_exists = True
 
         dead = self._check_death()
 
-        return self.snake, self.head, dead
+        return self.snake, self.head, self.fruit_pos, dead
 
     def set_gamespeed(self, inp: str):
         match inp:
@@ -124,3 +137,22 @@ class CGLogic:
             dead = (self.position_x, self.position_y)
 
         return dead
+
+    def _check_fruit(self):
+        return self.fruit_pos
+
+    def _place_fruit(self):
+        body_positions, _ = zip(*self.snake)
+
+        final_fruit = False
+
+        while not final_fruit:
+            potential_fruit = (
+                random.randint(0, self.grid_x - 1),
+                random.randint(0, self.grid_y - 1),
+            )
+
+            if potential_fruit not in body_positions:
+                final_fruit = potential_fruit
+
+        return final_fruit

@@ -31,13 +31,16 @@ class CGDisplay:
     def toggle_clear(self):
         self.screen_clear = not self.screen_clear
 
-    def update(self, snake: list, head: tuple):
+    def update(self, snake: list, head: tuple, fruit: tuple):
 
         self._create_grid()
 
         self._place_snake(snake)
 
         self._place_head(head)
+
+        if fruit != (-1, -1):
+            self._place_fruit(fruit)
 
         self._place_tail(snake[0])
 
@@ -208,9 +211,9 @@ class CGDisplay:
 
         final_lines = [
             "Slow - V",
-            "Fast - B",
-            "Faster - N",
-            "Fastest - M",
+            "Normal - B",
+            "Fast - N",
+            "Faster - M",
         ]
 
         for line in final_lines:
@@ -267,3 +270,11 @@ class CGDisplay:
                             surrounding.append(old_grid[new_y][new_x])
 
         return surrounding
+
+    def _place_fruit(self, fruit):
+
+        x = fruit[0]
+        y = fruit[1]
+
+        self.grid[y][x] = "❴❵"
+

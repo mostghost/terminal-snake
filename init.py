@@ -31,7 +31,9 @@ class MainLoop:
         self.dead = False
         self.reset = False
 
-        self.delta_set()
+        self.game_clock = 0
+
+        self.delta_set()  # Just to initialize it, it won't actually be used here.
 
     def delta_set(self):
         self.delta_start = time.time()
@@ -48,6 +50,8 @@ class MainLoop:
     def run(self):
         try:
             while True:
+
+                self.game_clock += 1
 
                 self.delta_set()
 
@@ -76,7 +80,9 @@ class MainLoop:
                     self.delta_end()
                     continue
 
-                snake, head, dead = self.logic_manager.update(inp)
+                snake, head, fruit, dead = self.logic_manager.update(
+                    inp, self.game_clock
+                )
 
                 if dead:
                     self.dead = True
@@ -84,7 +90,7 @@ class MainLoop:
                 if self.dead:
                     self.display_manager.dead_update(dead)
                 else:
-                    self.display_manager.update(snake, head)
+                    self.display_manager.update(snake, head, fruit)
 
                 self.display_manager.render("Normal")
 
