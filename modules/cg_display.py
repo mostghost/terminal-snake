@@ -12,7 +12,13 @@ class CGDisplay:
         self.grid = []
         self.rendered = []
 
+        self.prefix = []
+        self.suffix = []
+        self._create_prefix_suffix()
+
     def update(self):
+        self.rendered = []
+
         self._create_grid()
 
         self._place_snake()
@@ -31,15 +37,7 @@ class CGDisplay:
 
     def _append_border(self):
 
-        self.rendered = []
-
-        a_l = "╭───────────────╮"
-        b_l = "│ S  N  A  K  E │"
-        c_l = "│ ┌─────────────┴"
-
-        self.rendered.append(a_l + " " * (self.grid_x - len(a_l) + 3))
-        self.rendered.append(b_l + " " * (self.grid_x - len(b_l) + 3))
-        self.rendered.append(c_l + ("─" * ((self.real_x - len(c_l) + 3))) + "╮  ")
+        self.rendered.extend(self.prefix)
 
         for line in self.grid[:4]:
             self.rendered.append("│ │" + "".join(line) + "│  ")
@@ -53,9 +51,21 @@ class CGDisplay:
         for line in self.grid[7:]:
             self.rendered.append("  │" + "".join(line) + "│ │")
 
+        self.rendered.extend(self.suffix)
+
+    def _create_prefix_suffix(self):
+
+        a_l = "╭───────────────╮"
+        b_l = "│ S  N  A  K  E │"
+        c_l = "│ ┌─────────────┴"
+
+        self.prefix.append(a_l + " " * (self.grid_x - len(a_l) + 3))
+        self.prefix.append(b_l + " " * (self.grid_x - len(b_l) + 3))
+        self.prefix.append(c_l + ("─" * ((self.real_x - len(c_l) + 3))) + "╮  ")
+
         half_real = int(self.real_x / 2)
 
-        self.rendered.append(
+        self.suffix.append(
             "  ╰" + ("─" * (half_real - 1)) + "┬" + ("─" * (half_real) + "┘ │")
         )
 
@@ -67,7 +77,7 @@ class CGDisplay:
         ]
 
         for line in final_lines:
-            self.rendered.append(
+            self.suffix.append(
                 "   "
                 + " " * (half_real - 1)
                 + "│"
@@ -76,6 +86,6 @@ class CGDisplay:
                 + " │"
             )
 
-        self.rendered.append(
+        self.suffix.append(
             "   " + (" " * (half_real - 1)) + "╰" + ("─" * (half_real) + "──╯")
         )
