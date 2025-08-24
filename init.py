@@ -99,7 +99,6 @@ class MainLoop:
         finally:
             termios.tcsetattr(self.fd, termios.TCSANOW, self.old_term)
             fcntl.fcntl(self.fd, fcntl.F_SETFL, self.old_flags)
-            print("Goodbye.")
 
 
 loop = MainLoop()
