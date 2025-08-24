@@ -4,9 +4,9 @@ import sys
 
 class CGDisplay:
 
-    def __init__(self):
-        self.grid_x = 25
-        self.grid_y = 15
+    def __init__(self, x, y):
+        self.grid_x = x
+        self.grid_y = y
         self.real_x = self.grid_x * 2
 
         self.grid = []

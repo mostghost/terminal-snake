@@ -18,12 +18,16 @@ class MainLoop:
         self.old_term = termios.tcgetattr(self.fd)
         self.old_flags = fcntl.fcntl(self.fd, fcntl.F_GETFL)
 
+        self.x = 30  # Minimum 22 because of border formatting
+        self.y = 15
+
         self.input_manager = cg_input.CGInput()
-        self.logic_manager = cg_logic.CGLogic()
-        self.display_manager = cg_display.CGDisplay()
+        self.logic_manager = cg_logic.CGLogic(self.x, self.y)
+        self.display_manager = cg_display.CGDisplay(self.x, self.y)
 
         self.TARGET_FPS = 1
         self.TARGET_DURATION = 1.0 / self.TARGET_FPS
+
 
     def run(self):
         try:
