@@ -38,9 +38,9 @@ class MainLoop:
                 if inp == "O":
                     sys.exit()
 
-                snake = self.logic_manager.update(inp)
+                snake, head = self.logic_manager.update(inp)
 
-                self.display_manager.update(snake)
+                self.display_manager.update(snake, head)
 
                 delta_end = time.time()
 

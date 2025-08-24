@@ -16,12 +16,14 @@ class CGDisplay:
         self.suffix = []
         self._create_prefix_suffix()
 
-    def update(self, snake: list):
+    def update(self, snake: list, head: tuple):
         self.rendered = []
 
         self._create_grid()
 
         self._place_snake(snake)
+
+        self._place_head(head)
 
         self._append_border()
 
@@ -69,6 +71,23 @@ class CGDisplay:
                     self.grid[y][x] = "╒╤"
                 case "E-S":
                     self.grid[y][x] = "╘╧"
+
+    def _place_head(self, head):
+
+        x = head[0][0]
+        y = head[0][1]
+        direction = head[1]
+
+        match direction:
+            case "N":
+                self.grid[y][x] = "┌┐"
+            case "W":
+                self.grid[y][x] = "━═"
+            case "S":
+                self.grid[y][x] = "└┘"
+            case "E":
+                self.grid[y][x] = "═━"
+
 
     def _append_border(self):
 
