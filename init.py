@@ -17,7 +17,7 @@ input_manager = cg_input.CGInput()
 logic_manager = cg_logic.CGLogic()
 display_manager = cg_display.CGDisplay()
 
-TARGET_FPS = 12
+TARGET_FPS = 1
 TARGET_DURATION = 1.0 / TARGET_FPS
 
 try:
