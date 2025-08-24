@@ -28,6 +28,8 @@ class MainLoop:
         self.TARGET_FPS = 24
         self.TARGET_DURATION = 1.0 / self.TARGET_FPS
 
+        self.dead = False
+
     def run(self):
         try:
             while True:
@@ -38,9 +40,13 @@ class MainLoop:
                 if inp == "O":
                     sys.exit()
 
-                snake, head = self.logic_manager.update(inp)
+                if not self.dead:
+                    snake, head, dead = self.logic_manager.update(inp)
 
-                self.display_manager.update(snake, head)
+                if dead:
+                    self.dead = True
+
+                self.display_manager.update(snake, head, dead)
 
                 delta_end = time.time()
 

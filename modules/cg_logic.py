@@ -23,7 +23,7 @@ class CGLogic:
         if inp:
             self._change_direction(inp)
 
-        if self.counter == 4:
+        if self.counter == 10:
 
             self.prev_direction = self.direction
             self.direction = self.update_direction
@@ -35,9 +35,9 @@ class CGLogic:
         else:
             self.counter += 1
 
-        self._check_death()
+        dead = self._check_death()
 
-        return self.snake, self.head
+        return self.snake, self.head, dead
 
     def _change_direction(self, inp: str):
         match inp:
@@ -85,15 +85,18 @@ class CGLogic:
             self.snake.pop(0)
 
     def _check_death(self):
-        if self.position_x <= -1 or self.position_x == (self.grid_x):
-            sys.exit()
+        dead = False
 
+        if self.position_x <= -1 or self.position_x == (self.grid_x):
+            x = max(0, min(self.position_x, self.grid_x - 1))  # Clamps to acceptable range
+            dead = (x, self.position_y)
         if self.position_y <= -1 or self.position_y == (self.grid_y):
-            sys.exit()
+            y = max(0, min(self.position_y, self.grid_y - 1))
+            dead = (self.position_x, y)
 
         locations, _ = zip(*self.snake)
-
         current = (self.position_x, self.position_y)
-
         if current in locations:
-            sys.exit()
+            dead = (self.position_x, self.position_y)
+
+        return dead

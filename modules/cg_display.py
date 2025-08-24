@@ -1,5 +1,5 @@
-import os
 import sys
+import copy
 
 
 class CGDisplay:
@@ -11,12 +11,14 @@ class CGDisplay:
 
         self.grid = []
         self.rendered = []
+        self.dead_grid = False
 
         self.prefix = []
         self.suffix = []
         self._create_prefix_suffix()
 
-    def update(self, snake: list, head: tuple):
+    def update(self, snake: list, head: tuple, dead: None | tuple):
+
         self.rendered = []
 
         self._create_grid()
@@ -26,6 +28,9 @@ class CGDisplay:
         self._place_head(head)
 
         self._place_tail(snake[0])
+
+        if dead:
+            self._dead_explosion(dead)
 
         self._append_border()
 
@@ -159,3 +164,46 @@ class CGDisplay:
         self.suffix.append(
             "   " + (" " * (half_real - 1)) + "╰" + ("─" * (half_real) + "──╯")
         )
+
+    def _dead_explosion(self, dead):
+        death_token = "░░"
+
+        if not self.dead_grid:
+            self.dead_grid = copy.deepcopy(self.grid)
+
+            x = dead[0]
+            y = dead[1]
+
+            self.dead_grid[y][x] = death_token
+            self.grid = copy.deepcopy(self.dead_grid)
+            return
+
+        old_grid = copy.deepcopy(self.dead_grid)
+
+        for y, line in enumerate(old_grid):
+            for x, _ in enumerate(line):
+                neighbours = self._dead_get_surrounding(x, y, old_grid)
+
+                if death_token in neighbours:
+                    self.dead_grid[y][x] = death_token
+
+        self.grid = copy.deepcopy(self.dead_grid)
+
+    def _dead_get_surrounding(self, x, y, old_grid):
+
+        height = self.grid_y
+        width = self.grid_x
+
+        surrounding = []
+
+        for dy in [-1, 0, 1]:
+            new_y = y + dy
+            if 0 <= new_y < height:
+                for dx in [-1, 0, 1]:
+                    new_x = x + dx
+                    if 0 <= new_x < width:
+                        # Exclude the middle block:
+                        if not (dx == 0 and dy == 0):
+                            surrounding.append(old_grid[new_y][new_x])
+
+        return surrounding
