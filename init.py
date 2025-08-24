@@ -11,8 +11,8 @@ import fcntl
 class MainLoop:
 
     def __init__(self):
-        # We're making a copy of the original terminal settings to restore once we're done.
-        # We're doing that because the input method on linux must mess with these to work.
+        # We're making a copy of the original terminal settings for restoring.
+        # The input method on linux must mess with the terminal to work.
 
         self.fd = sys.stdin.fileno()
         self.old_term = termios.tcgetattr(self.fd)
