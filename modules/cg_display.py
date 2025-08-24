@@ -12,6 +12,7 @@ class CGDisplay:
         self.grid = []
         self.rendered = []
         self.dead_grid = False
+        self.death_counter = 0
 
         self.prefix = []
         self.suffix = []
@@ -178,14 +179,17 @@ class CGDisplay:
             self.grid = copy.deepcopy(self.dead_grid)
             return
 
-        old_grid = copy.deepcopy(self.dead_grid)
+        if self.death_counter < 5:
+            old_grid = copy.deepcopy(self.dead_grid)
 
-        for y, line in enumerate(old_grid):
-            for x, _ in enumerate(line):
-                neighbours = self._dead_get_surrounding(x, y, old_grid)
+            for y, line in enumerate(old_grid):
+                for x, _ in enumerate(line):
+                    neighbours = self._dead_get_surrounding(x, y, old_grid)
 
-                if death_token in neighbours:
-                    self.dead_grid[y][x] = death_token
+                    if death_token in neighbours:
+                        self.dead_grid[y][x] = death_token
+
+            self.death_counter += 1
 
         self.grid = copy.deepcopy(self.dead_grid)
 
