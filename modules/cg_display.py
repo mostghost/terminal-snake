@@ -1,3 +1,4 @@
+import os
 import sys
 import copy
 
@@ -13,14 +14,15 @@ class CGDisplay:
         self.rendered = []
         self.dead_grid = False
         self.death_counter = 0
+        self.death_pos = (0, 0)
+
+        self.screen_clear = False
 
         self.prefix = []
         self.suffix = []
         self._create_prefix_suffix()
 
-    def update(self, snake: list, head: tuple, dead: None | tuple):
-
-        self.rendered = []
+    def update(self, snake: list, head: tuple):
 
         self._create_grid()
 
@@ -30,12 +32,25 @@ class CGDisplay:
 
         self._place_tail(snake[0])
 
+    def dead_update(self, dead: tuple):
+
         if dead:
+            self.death_pos = dead
+
+        if self.death_counter < 5:
             self._dead_explosion(dead)
+            self.death_counter += 1
+            self.grid = copy.deepcopy(self.dead_grid)
+        else:
+            return
+
+    def render(self):
+        self.rendered = []
 
         self._append_border()
 
-        # os.system("clear")
+        if self.screen_clear:
+            os.system("clear")
 
         sys.stdout.write("\n".join(self.rendered) + "\n")
 
@@ -179,19 +194,14 @@ class CGDisplay:
             self.grid = copy.deepcopy(self.dead_grid)
             return
 
-        if self.death_counter < 5:
-            old_grid = copy.deepcopy(self.dead_grid)
+        old_grid = copy.deepcopy(self.dead_grid)
 
-            for y, line in enumerate(old_grid):
-                for x, _ in enumerate(line):
-                    neighbours = self._dead_get_surrounding(x, y, old_grid)
+        for y, line in enumerate(old_grid):
+            for x, _ in enumerate(line):
+                neighbours = self._dead_get_surrounding(x, y, old_grid)
 
-                    if death_token in neighbours:
-                        self.dead_grid[y][x] = death_token
-
-            self.death_counter += 1
-
-        self.grid = copy.deepcopy(self.dead_grid)
+                if death_token in neighbours:
+                    self.dead_grid[y][x] = death_token
 
     def _dead_get_surrounding(self, x, y, old_grid):
 

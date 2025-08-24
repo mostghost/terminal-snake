@@ -40,13 +40,17 @@ class MainLoop:
                 if inp == "O":
                     sys.exit()
 
-                if not self.dead:
-                    snake, head, dead = self.logic_manager.update(inp)
+                snake, head, dead = self.logic_manager.update(inp)
 
                 if dead:
                     self.dead = True
 
-                self.display_manager.update(snake, head, dead)
+                if self.dead:
+                    self.display_manager.dead_update(dead)
+                else:
+                    self.display_manager.update(snake, head)
+
+                self.display_manager.render()
 
                 delta_end = time.time()
 
