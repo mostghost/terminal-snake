@@ -7,40 +7,52 @@ import sys
 import termios
 import fcntl
 
-# We're making a copy of the original terminal settings to restore once we're done.
-# We're doing that because the input method on linux must mess with these to work.
-fd = sys.stdin.fileno()
-old_term = termios.tcgetattr(fd)
-old_flags = fcntl.fcntl(fd, fcntl.F_GETFL)
 
-input_manager = cg_input.CGInput()
-logic_manager = cg_logic.CGLogic()
-display_manager = cg_display.CGDisplay()
+class MainLoop:
 
-TARGET_FPS = 1
-TARGET_DURATION = 1.0 / TARGET_FPS
+    def __init__(self):
+        # We're making a copy of the original terminal settings to restore once we're done.
+        # We're doing that because the input method on linux must mess with these to work.
 
-try:
-    while True:
-        delta_start = time.time()
+        self.fd = sys.stdin.fileno()
+        self.old_term = termios.tcgetattr(self.fd)
+        self.old_flags = fcntl.fcntl(self.fd, fcntl.F_GETFL)
 
-        inp = input_manager.update()
-        # One special exception as soon as we get input:
-        if inp == "O":
-            sys.exit()
+        self.input_manager = cg_input.CGInput()
+        self.logic_manager = cg_logic.CGLogic()
+        self.display_manager = cg_display.CGDisplay()
 
-        logic_manager.update(inp)
+        self.TARGET_FPS = 1
+        self.TARGET_DURATION = 1.0 / self.TARGET_FPS
 
-        display_manager.update()
+    def run(self):
+        try:
+            while True:
+                delta_start = time.time()
 
-        delta_end = time.time()
+                inp = self.input_manager.update()
+                # One special exception as soon as we get input:
+                if inp == "O":
+                    sys.exit()
 
-        delta_elapsed = delta_end - delta_start
-        delta_frame = TARGET_DURATION - delta_elapsed
+                self.logic_manager.update(inp)
 
-        if delta_frame > 0:
-            time.sleep(delta_frame)
+                self.display_manager.update()
 
-finally:
-    termios.tcsetattr(fd, termios.TCSANOW, old_term)
-    fcntl.fcntl(fd, fcntl.F_SETFL, old_flags)
+                delta_end = time.time()
+
+                delta_elapsed = delta_end - delta_start
+                delta_frame = self.TARGET_DURATION - delta_elapsed
+
+                if delta_frame > 0:
+                    time.sleep(delta_frame)
+
+        finally:
+            termios.tcsetattr(self.fd, termios.TCSANOW, self.old_term)
+            fcntl.fcntl(self.fd, fcntl.F_SETFL, self.old_flags)
+            print("Goodbye.")
+
+
+loop = MainLoop()
+
+loop.run()
