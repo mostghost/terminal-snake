@@ -147,7 +147,7 @@ class CGDisplay:
     def _create_prefix_suffix(self):
 
         a_l = "╭────────────────────╮"
-        b_l = "│ T A P E    W O R M │"
+        b_l = "│ F L A T    W O R M │"
         c_l = "│ ┌──────────────────┴"
 
         self.prefix.append(a_l + " " * (self.grid_x - len(a_l) + 3))
