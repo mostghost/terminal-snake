@@ -16,24 +16,27 @@ class CGDisplay:
         self.suffix = []
         self._create_prefix_suffix()
 
-    def update(self):
+    def update(self, snake:list):
         self.rendered = []
 
         self._create_grid()
 
-        self._place_snake()
+        self._place_snake(snake)
 
         self._append_border()
 
-        os.system("clear")
+        # os.system("clear")
 
         sys.stdout.write("\n".join(self.rendered) + "\n")
 
     def _create_grid(self):
         self.grid = [["  " for x in range(self.grid_x)] for x in range(self.grid_y)]
 
-    def _place_snake(self):
-        pass
+    def _place_snake(self, snake: list):
+        for position, direction_type in snake:
+            x = position[0]
+            y = position[1]
+            self.grid[y][x] = "00"
 
     def _append_border(self):
 

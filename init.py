@@ -25,9 +25,8 @@ class MainLoop:
         self.logic_manager = cg_logic.CGLogic(self.x, self.y)
         self.display_manager = cg_display.CGDisplay(self.x, self.y)
 
-        self.TARGET_FPS = 1
+        self.TARGET_FPS = 8
         self.TARGET_DURATION = 1.0 / self.TARGET_FPS
-
 
     def run(self):
         try:
@@ -39,9 +38,9 @@ class MainLoop:
                 if inp == "O":
                     sys.exit()
 
-                self.logic_manager.update(inp)
+                snake = self.logic_manager.update(inp)
 
-                self.display_manager.update()
+                self.display_manager.update(snake)
 
                 delta_end = time.time()
 

@@ -31,6 +31,11 @@ class CGInput:
 
         if inp in [
             "O",  # Quit
+            "X",  # Toggle screen clear
+            "W",
+            "A",
+            "S",
+            "D",
         ]:
             return inp
 
