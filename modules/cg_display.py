@@ -105,8 +105,6 @@ class CGDisplay:
             case "E":
                 self.grid[y][x] = "╶═"
 
-
-
     def _append_border(self):
 
         self.rendered.extend(self.prefix)

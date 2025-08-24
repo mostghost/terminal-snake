@@ -7,14 +7,14 @@ class CGLogic:
         self.grid_y = y
 
         self.snake = [((int(x / 2), y - 1), "N-N"), ((int(x / 2), y - 2), "N-N")]
-        self.snake_length = 2
+        self.snake_length = 6
         self.position_x = int(x / 2)
-        self.position_y = y - 2
+        self.position_y = y - 3
         self.direction = "N"
         self.prev_direction = "N"
         self.update_direction = "N"
         self.counter = 0
-        self.head = ((int(x / 2), y - 3), "N")
+        self.head = ((self.position_x, self.position_y), "N")
 
     def update(self, inp: str):
 
@@ -89,4 +89,11 @@ class CGLogic:
             sys.exit()
 
         if self.position_y <= -1 or self.position_y == (self.grid_y):
+            sys.exit()
+
+        locations, _ = zip(*self.snake)
+
+        current = (self.position_x, self.position_y)
+
+        if current in locations:
             sys.exit()
